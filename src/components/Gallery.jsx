@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 const Gallery = () => {
   const [width, setWidth] = useState(window.innerWidth);
   const [search, setSearch] = useState("");
-  const [Loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -61,25 +61,28 @@ const Gallery = () => {
   };
 
   return (
-    <div className="grid-container">
-      <div className="flex justify-between items-center m-4">
-        <h1 className="font-bold">IMAGE GALLERY</h1>
-        <div>
+    <div className="lg:grid-container">
+      <div className="flex flex-col lg:flex-row justify-between items-center m-4">
+        <div className="flex justify-between items-center w-full mb-2 lg:mb-0">
+          <h1 className="font-bold text-center lg:text-left">IMAGE GALLERY</h1>
+          <button
+            onClick={handleLogout}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Logout
+          </button>
+        </div>
+        <div className="w-full lg:w-auto ml-2 flex justify-center  lg:justify-start">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by tag"
-            className="border border-gray-300 rounded px-2 py-1"
+            className="border border-gray-300 rounded px-2 py-1 w-full max-w-md lg:max-w-full"
           />
         </div>
-        <button
-          onClick={handleLogout}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Logout
-        </button>
       </div>
+
       <ResponsiveGridLayout
         className="layout"
         layouts={{ lg: layout }}
@@ -89,10 +92,20 @@ const Gallery = () => {
       >
         {filteredImages.length === 0 && search.length > 0 ? (
           <div className="no-items-found">No items found</div>
-        ) : Loaded ? (
+        ) : loaded ? (
           filteredImages.map((image) => (
-            <div key={image.id} className="overflow-hidden">
+            <div key={image.id} className="overflow-hidden relative">
               <img src={image.src} alt={`${image.id}`} id={image.id} />
+              <div className="absolute bottom-0 left-0 right-0">
+                {image.tag.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="bg-gray-800 bg-opacity-75 text-white mr-2 mb-2 px-2 py-1 rounded"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
           ))
         ) : (

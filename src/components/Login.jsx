@@ -24,6 +24,9 @@ const Login = () => {
       console.error((error) => {
         console.log(error);
       });
+      setTimeout(() => {
+        setError(null);
+      }, 2000);
     }
   };
 
