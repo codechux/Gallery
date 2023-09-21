@@ -7,10 +7,13 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
 
     try {
       await signInWithEmailAndPassword(auth, email, password).then(
@@ -27,6 +30,8 @@ const Login = () => {
       setTimeout(() => {
         setError(null);
       }, 2000);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,9 +77,10 @@ const Login = () => {
         </div>
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+          disabled={loading}
         >
-          Login
+          {loading ? "Logging in" : "Login"}
         </button>
       </form>
       {error && (

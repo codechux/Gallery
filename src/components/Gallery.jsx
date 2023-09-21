@@ -27,11 +27,11 @@ const Gallery = () => {
   }, []);
 
   useEffect(() => {
-    const delay = setTimeout(() => {
-      setLoaded(true);
-    }, 5000);
+    setLoaded(true);
+    // const delay = setTimeout(() => {
+    // }, 5000);
 
-    return () => clearTimeout(delay);
+    // return () => clearTimeout(delay);
   }, []);
 
   const layout = images.map((image, index) => ({
@@ -83,6 +83,14 @@ const Gallery = () => {
         </div>
       </div>
 
+      <div className="mx-5 p-4">
+        <h1 className="text-base sm:text-xl md:text-2xl lg:text-3xl font-bold text-center">
+          This app provides a user-friendly interface for dragging and
+          re-arranging images, explore a gallery of images, and even search by
+          tags. Enjoy a smooth experience.
+        </h1>
+      </div>
+
       <ResponsiveGridLayout
         className="layout"
         layouts={{ lg: layout }}
@@ -91,16 +99,21 @@ const Gallery = () => {
         width={width}
       >
         {filteredImages.length === 0 && search.length > 0 ? (
-          <div className="no-items-found">No items found</div>
+          <div className="text-black font-bold">No items found</div>
         ) : loaded ? (
           filteredImages.map((image) => (
             <div key={image.id} className="overflow-hidden relative">
-              <img src={image.src} alt={`${image.id}`} id={image.id} />
-              <div className="absolute bottom-0 left-0 right-0">
+              <img
+                src={image.src}
+                alt={`${image.id}`}
+                id={image.id}
+                className="object-cover"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-2 bg-gray-800 bg-opacity-75">
                 {image.tag.map((tag, index) => (
                   <span
                     key={index}
-                    className="bg-gray-800 bg-opacity-75 text-white mr-2 mb-2 px-2 py-1 rounded"
+                    className="bg-white text-gray-800 mr-2 mb-2 px-2 py-1 rounded"
                   >
                     {tag}
                   </span>
@@ -110,8 +123,11 @@ const Gallery = () => {
           ))
         ) : (
           skeletonLayout.map((item) => (
-            <div key={item.i} className="overflow-hidden">
-              <Skeleton className="skeleton-loading" width={100} height={100} />
+            <div
+              key={item.i}
+              className="animate-shimmer bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-cover bg-no-repeat h-4 w-32 rounded"
+            >
+              <Skeleton width={100} height={100} />
             </div>
           ))
         )}
