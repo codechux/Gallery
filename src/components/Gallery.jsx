@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Responsive as ResponsiveGridLayout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -12,26 +12,31 @@ const Gallery = () => {
   const [width, setWidth] = useState(window.innerWidth);
   const [search, setSearch] = useState("");
   const [loaded, setLoaded] = useState(false);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const handleResize = () => {
-      setWidth(window.innerWidth);
-    };
+  const handleResize = useCallback(() => {
+    setWidth(window.innerWidth);
+  }, []);
 
+  useEffect(() => {
     window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [handleResize]);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [search]);
 
   useEffect(() => {
     setLoaded(true);
-    // const delay = setTimeout(() => {
-    // }, 5000);
-
-    // return () => clearTimeout(delay);
   }, []);
 
   const layout = images.map((image, index) => ({
@@ -48,7 +53,9 @@ const Gallery = () => {
   }));
 
   const filteredImages = images.filter((image) =>
-    image.tag.some((tag) => tag.toLowerCase().includes(search.toLowerCase()))
+    image.tag.some((tag) =>
+      tag.toLowerCase().includes(debouncedSearch.toLowerCase())
+    )
   );
 
   const handleLogout = async () => {
@@ -61,7 +68,7 @@ const Gallery = () => {
   };
 
   return (
-    <div className="lg:grid-container">
+    <div>
       <div className="flex flex-col lg:flex-row justify-between items-center m-4">
         <div className="flex justify-between items-center w-full mb-2 lg:mb-0">
           <h1 className="font-bold text-center lg:text-left">IMAGE GALLERY</h1>
@@ -98,7 +105,7 @@ const Gallery = () => {
         cols={{ lg: 4, md: 2, sm: 2, xs: 1, xxs: 1 }}
         width={width}
       >
-        {filteredImages.length === 0 && search.length > 0 ? (
+        {filteredImages.length === 0 && debouncedSearch.length > 0 ? (
           <div className="text-black font-bold">No items found</div>
         ) : loaded ? (
           filteredImages.map((image) => (
@@ -107,7 +114,7 @@ const Gallery = () => {
                 src={image.src}
                 alt={`${image.id}`}
                 id={image.id}
-                className="object-cover"
+                loading="lazy"
               />
               <div className="absolute bottom-0 left-0 right-0 p-2 bg-gray-800 bg-opacity-75">
                 {image.tag.map((tag, index) => (
