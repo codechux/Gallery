@@ -114,7 +114,7 @@ const Gallery = () => {
                 src={image.src}
                 alt={`${image.id}`}
                 id={image.id}
-                loading="lazy"
+                // loading="lazy"
               />
               <div className="absolute bottom-0 left-0 right-0 p-2 bg-gray-800 bg-opacity-75">
                 {image.tag.map((tag, index) => (
