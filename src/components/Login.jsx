@@ -29,9 +29,9 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
+    <div className="flex items-center justify-center h-screen bg-black">
       <div className="max-w-md w-full p-6 bg-white rounded shadow-md">
-        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">Gallery Login</h2>
         <form onSubmit={handleLogin}>
           <div className="mb-4">
             <label
